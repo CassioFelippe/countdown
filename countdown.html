@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Countdown!</title>
+  <script type="text/javascript">
+    function calculateTime(){
+      let now = new Date();
+      let exit = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 17, 0, 0);
+      
+      if(document.getElementById('exit').value){
+        let values = document.getElementById('exit').value.split('-');
+        exit = new Date(values[0], values[1]-1, values[2], 17, 0, 0, 0);
+      }
+      if(document.getElementById('hour').value){
+        exit.setHours(document.getElementById('hour').value);
+      }
+      if(document.getElementById('minute').value){
+        exit.setMinutes(document.getElementById('minute').value);
+      }
+
+      let difference = exit.getTime() - now.getTime();
+
+      if (difference > 0) {
+        let m = parseInt(difference/1000/60), rminutes = m > 0 ? (m < 10 ? '0'+m : ''+m) : '00';
+        let h = 0;
+        while(m > 60){
+          h++;
+          m -= 60;
+        }
+
+        let minutes = exit.getMinutes();
+
+        document.getElementById('free-at').innerHTML = `${exit.getHours()}h${minutes < 10 ? '0'+minutes : minutes}`;
+
+        h = h > 0 ? h+' hours ' : '';
+        m = (m > 0 ? (m < 10 ? '0'+m : m) : '00')+' minutes ';
+        document.getElementById('remaining-time').innerHTML = `${h}${m}`;
+        document.getElementById('remaining-seconds').innerHTML = 60 - now.getSeconds();
+
+
+        document.getElementById('remaining-date').hidden = false;
+        document.getElementById('will-be-free-at').hidden = false;
+        document.getElementById('already-free').hidden = true;
+      } else {
+        document.getElementById('remaining-date').hidden = true;
+        document.getElementById('will-be-free-at').hidden = true;
+        document.getElementById('already-free').hidden = false;
+      }
+    }
+    setInterval(function() {
+      calculateTime();
+    }, 1000);
+  </script>
+</head>
+<body>
+  <div style="text-align-last: center; width: 100%;">
+    <div style="width: 100%;">
+      <input type="date" id="exit">
+      <input type="number" id="hour" placeholder="hh" style="width: 40px;">
+      <input type="number" id="minute" placeholder="mm" style="width: 40px;">
+    </div>
+    <div style="width: 100%;" id="already-free" hidden>
+      You're already free!<br/>
+    </div>
+    <div style="width: 100%;" id="will-be-free-at">
+      Will be free at <a id="free-at"/><br/>
+    </div>
+    <div style="width: 100%;" id="remaining-date">
+      Remaining time: <a id="remaining-time"></a> and <a id="remaining-seconds"></a> seconds
+    </div><br/>
+  </div>
+</body>
+</html>
